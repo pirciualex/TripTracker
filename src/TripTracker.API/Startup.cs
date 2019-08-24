@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Swashbuckle.AspNetCore.Swagger;
 using TripTracker.API.Services;
 
 namespace TripTracker.API
@@ -22,11 +23,23 @@ namespace TripTracker.API
             services.AddScoped<ITripService, TripRepository>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddSwaggerGen(options =>
+                options.SwaggerDoc("v1", new Info { Title = "Trip Tracker", Version = "v1" })
+            );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseSwagger();
+            if (env.IsDevelopment())
+            {
+                app.UseSwaggerUI(options =>
+                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Trip Tracker v1")
+                );
+            }
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
