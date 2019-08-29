@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TripTracker.API.Data;
@@ -23,25 +24,32 @@ namespace TripTracker.API.Services
 
         public async Task Delete(int id)
         {
-            var trip = GetById(id);
+            var trip = GetById(id).Result;
             _context.Trips.Remove(trip);
             await _context.SaveChangesAsync();
         }
 
-        public IEnumerable<Trip> Get()
+        public async Task<IEnumerable<Trip>> Get()
         {
-            return _context.Trips.ToList();
+            var trips = await _context.Trips.ToListAsync();
+            return trips;
         }
 
-        public Trip GetById(int id)
+        public async Task<Trip> GetById(int id)
         {
-            return _context.Trips.Find(id);
+            var trip = await _context.Trips.FindAsync(id);
+            return trip;
         }
 
         public async Task Update(Trip trip)
         {
             _context.Trips.Update(trip);
             await _context.SaveChangesAsync();
+        }
+
+        public bool TripExists(int id)
+        {
+            return _context.Trips.Any(t => t.Id == id);
         }
     }
 }
