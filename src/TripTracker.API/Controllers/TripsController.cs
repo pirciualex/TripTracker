@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TripTracker.API.Models;
 using TripTracker.API.Services;
-
 namespace TripTracker.API.Controllers
 {
     [Route("api/[controller]")]
@@ -18,37 +18,62 @@ namespace TripTracker.API.Controllers
 
         // GET: api/Trip
         [HttpGet]
-        public IEnumerable<Trip> Get()
+        public async Task<ActionResult<IEnumerable<Trip>>> GetTrips()
         {
-            return _tripService.Get();
+            var trips = await _tripService.Get();
+            return Ok(trips);
         }
 
         // GET: api/Trip/5
-        [HttpGet("{id}", Name = "Get")]
-        public Trip Get(int id)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Trip>> GetTrip(int id)
         {
-            return _tripService.GetById(id);
+            var trip = await _tripService.GetById(id);
+            if (trip == null)
+            {
+                return NotFound();
+            }
+            return Ok(trip);
         }
 
         // POST: api/Trip
         [HttpPost]
-        public void Post([FromBody] Trip trip)
+        public async Task<ActionResult<Trip>> PostTrip([FromBody] Trip trip)
         {
-            _tripService.Add(trip);
+            await _tripService.Add(trip);
+            return CreatedAtAction("GetTrip", new { id = trip.Id }, trip);
         }
 
         // PUT: api/Trip/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] Trip trip)
+        public async Task<IActionResult> PutTrip(int id, [FromBody] Trip trip)
         {
-            _tripService.Update(trip);
+            if (!_tripService.TripExists(id))
+            {
+                return NotFound();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            await _tripService.Update(trip);
+            return NoContent();
         }
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> DeleteTrip(int id)
         {
-            _tripService.Delete(id);
+            if (!_tripService.TripExists(id))
+            {
+                return NotFound();
+            }
+
+            await _tripService.Delete(id);
+
+            return NoContent();
         }
     }
 }
