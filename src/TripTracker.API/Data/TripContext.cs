@@ -10,5 +10,10 @@ namespace TripTracker.API.Data
         }
 
         public DbSet<Trip> Trips { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<Trip>().HasKey(t => t.Id);
+        }
     }
 }
