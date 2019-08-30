@@ -6,11 +6,11 @@ namespace TripTracker.API.Services
 {
     public interface ITripService
     {
-        Task<IEnumerable<Trip>> Get();
-        Task<Trip> GetById(int id);
-        Task Add(Trip trip);
-        Task Update(Trip trip);
-        Task Delete(int id);
+        Task<IEnumerable<Trip>> GetAsync();
+        Task<Trip> GetByIdAsync(int id);
+        Task AddAsync(Trip trip);
+        Task UpdateAsync(Trip trip);
+        Task DeleteAsync(int id);
         bool TripExists(int id);
     }
 }

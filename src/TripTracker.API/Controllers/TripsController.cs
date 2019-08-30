@@ -20,7 +20,7 @@ namespace TripTracker.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Trip>>> GetTrips()
         {
-            var trips = await _tripService.Get();
+            var trips = await _tripService.GetAsync();
             return Ok(trips);
         }
 
@@ -28,7 +28,7 @@ namespace TripTracker.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Trip>> GetTrip(int id)
         {
-            var trip = await _tripService.GetById(id);
+            var trip = await _tripService.GetByIdAsync(id);
             if (trip == null)
             {
                 return NotFound();
@@ -40,7 +40,7 @@ namespace TripTracker.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Trip>> PostTrip([FromBody] Trip trip)
         {
-            await _tripService.Add(trip);
+            await _tripService.AddAsync(trip);
             return CreatedAtAction("GetTrip", new { id = trip.Id }, trip);
         }
 
@@ -58,7 +58,7 @@ namespace TripTracker.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            await _tripService.Update(trip);
+            await _tripService.UpdateAsync(trip);
             return NoContent();
         }
 
@@ -71,7 +71,7 @@ namespace TripTracker.API.Controllers
                 return NotFound();
             }
 
-            await _tripService.Delete(id);
+            await _tripService.DeleteAsync(id);
 
             return NoContent();
         }

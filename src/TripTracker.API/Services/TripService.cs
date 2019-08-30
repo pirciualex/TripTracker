@@ -16,32 +16,32 @@ namespace TripTracker.API.Services
             _context = context;
         }
 
-        public async Task Add(Trip trip)
+        public async Task AddAsync(Trip trip)
         {
             _context.Trips.Add(trip);
             await _context.SaveChangesAsync();
         }
 
-        public async Task Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            var trip = GetById(id).Result;
+            var trip = GetByIdAsync(id).Result;
             _context.Trips.Remove(trip);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Trip>> Get()
+        public async Task<IEnumerable<Trip>> GetAsync()
         {
             var trips = await _context.Trips.ToListAsync();
             return trips;
         }
 
-        public async Task<Trip> GetById(int id)
+        public async Task<Trip> GetByIdAsync(int id)
         {
             var trip = await _context.Trips.FindAsync(id);
             return trip;
         }
 
-        public async Task Update(Trip trip)
+        public async Task UpdateAsync(Trip trip)
         {
             _context.Trips.Update(trip);
             await _context.SaveChangesAsync();
